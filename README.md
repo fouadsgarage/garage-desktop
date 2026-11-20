@@ -77,7 +77,7 @@ Your data stays in your own JSON files. Garage Desktop doesn't collect or send a
 ### Download the app
 
 1. Go to the [latest release](https://github.com/fouadsgarage/garage-desktop/releases/latest).
-2. Download `GarageDesktop.exe` from the latest release (**v1.0.1 or later** — earlier versions had a JSON export/import bug).
+2. Download `GarageDesktop.exe` (v1.0.1 or later — earlier versions had a JSON export/import bug and used the filename `Garage Desktop.exe`).
 3. Run it. No installation or Python required.
 
 ---
@@ -127,7 +127,7 @@ The full terminal command set and JSON format are documented in the [Garage READ
 |---|---|
 | Shell | pywebview (WebView2 on Windows) |
 | App | Hosted Garage (HTML/CSS/JS) |
-| Packaging | PyInstaller for the `.exe` |
+| Packaging | PyInstaller (one-file executable) |
 | Build Tools | PyInstaller |
 
 ---
@@ -136,9 +136,11 @@ The full terminal command set and JSON format are documented in the [Garage READ
 
 ```
 garage-desktop/
-├── main.py
-├── requirements.txt
-├── GarageDesktop.spec
+├── app/
+│   └── GarageDesktop.exe
+├── source/
+│   └── main.py
+├── LICENSE
 └── README.md
 ```
 
@@ -147,6 +149,15 @@ garage-desktop/
 ## Contributing
 
 Contributions, suggestions, and improvements are welcome.
+
+### Build from source
+
+1. Install Python 3.10+
+2. Install dependencies: `pip install pywebview pyinstaller`
+3. Run the app: `python source/main.py`
+4. Build the executable: `pyinstaller --onefile --distpath app source/main.py`
+
+### Submit a change
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
