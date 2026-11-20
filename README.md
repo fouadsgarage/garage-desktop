@@ -16,6 +16,8 @@
 
 The desktop app doesn't bundle or fork the web app. It always loads the latest hosted version, so every improvement to Garage reaches the desktop app automatically.
 
+> **Version note:** **v1.0.1** fixes JSON export and import. If you are on v1.0.0 or earlier, update from the [latest release](https://github.com/fouadsgarage/garage-desktop/releases/latest).
+
 ---
 
 ## Features
@@ -26,10 +28,12 @@ The desktop app doesn't bundle or fork the web app. It always loads the latest h
 | **Always Up to Date** | Loads the hosted web version, so there's nothing to update manually |
 | **Offline Detection** | Detects when there is no internet connection instead of showing a blank page |
 | **Custom Retry** | Retry loading Garage once your connection is back |
-| **JSON Export** | Save your project state through the system save dialog |
-| **JSON Import** | Load a previously exported `project-status.json` |
+| **JSON Export** | Save your project state through the system save dialog, producing a `project-status-YYYY-MM-DD.json` file (fixed in v1.0.1) |
+| **JSON Import** | Load a previously exported `project-status.json`, with the same merge / replace / cancel flow and task validation as the web version (fixed in v1.0.1) |
 | **Full Garage Feature Set** | Tasks board, progress tracking, and built-in terminal, exactly as on the web |
-| **Lightweight** | A small, self-contained executable |
+| **Lightweight** | A small executable that loads the hosted app — no Python, no bundler |
+
+All board features — search, assignee filter, per-assignee summary, weight validation, due-date highlighting, priority badges, drag & drop, task history, auto-save, and reset — are available exactly as on the web.
 
 ---
 
@@ -40,7 +44,7 @@ The desktop app doesn't bundle or fork the web app. It always loads the latest h
 | Lives in a browser tab | Has its own window and taskbar entry |
 | Easy to lose among other tabs | Always one click away |
 | Downloads handled by the browser | Export uses the native save dialog |
-| Needs a manual reload when offline | Detects offline state and offers a retry |
+| Needs a manual reload to pick up changes | Always loads the latest hosted version |
 
 ---
 
@@ -49,7 +53,8 @@ The desktop app doesn't bundle or fork the web app. It always loads the latest h
 ```
 1. Garage Desktop opens a native window (pywebview)
 2. The window loads https://fouadsgarage.github.io/garage/
-3. Downloads are enabled, so Export JSON saves a file normally
+3. Export JSON is intercepted and saved through the system save dialog;
+   Import JSON opens the native file picker and applies the same validation as the web version
 4. If the connection is lost, the app shows an offline state with a Retry option
 ```
 
@@ -63,7 +68,7 @@ Your data stays in your own JSON files. Garage Desktop doesn't collect or send a
 |---|---|
 | OS | Windows 10 or 11 |
 | Runtime | [Microsoft Edge WebView2](https://developer.microsoft.com/microsoft-edge/webview2/) (preinstalled on current Windows versions) |
-| Internet | Required, since Garage is loaded from GitHub Pages |
+| Internet | Required for loading the app and for any use, since the app is not bundled |
 
 ---
 
@@ -72,7 +77,7 @@ Your data stays in your own JSON files. Garage Desktop doesn't collect or send a
 ### Download the app
 
 1. Go to the [latest release](https://github.com/fouadsgarage/garage-desktop/releases/latest).
-2. Download `GarageDesktop.exe`.
+2. Download `GarageDesktop.exe` from the latest release (**v1.0.1 or later** — earlier versions had a JSON export/import bug).
 3. Run it. No installation or Python required.
 
 ---
@@ -83,11 +88,13 @@ Your data stays in your own JSON files. Garage Desktop doesn't collect or send a
 |---|---|
 | Add a task | Open **Tasks**, enter a title, assignee, and weight, then click **Add task** |
 | Move a task | Click **Start** to move it to In Progress, then **Success** to mark it Done |
-| Export your project | Click **Export JSON** and choose where to save the file |
-| Restore your project | Click **Import JSON** and select your saved file |
+| Export your project | Click **Export JSON**; the system save dialog opens with a `project-status-YYYY-MM-DD.json` filename |
+| Restore your project | Click **Import JSON**; if the board already has tasks, choose Merge, Replace, or Cancel |
 | Use the terminal | Open **Terminal** and type `help` |
 
-> Tasks live in memory while the app is open. Use **Export JSON** to keep your work between sessions, then commit the file to your project repo.
+> Tasks are auto-saved in the WebView2 profile after every change. Use **Export JSON** to keep a portable copy, then commit the file to your project repo.
+
+The full terminal command set and JSON format are documented in the [Garage README](https://github.com/fouadsgarage/garage#terminal-commands).
 
 ---
 
@@ -98,6 +105,7 @@ Your data stays in your own JSON files. Garage Desktop doesn't collect or send a
 | Blank window or offline screen | Check your internet connection, then use Retry |
 | Window doesn't open on Windows | Install the [WebView2 runtime](https://developer.microsoft.com/microsoft-edge/webview2/) |
 | Old version still showing | Fully close the app and start it again |
+| Export or Import does nothing / saves an empty file | Update to **v1.0.1** or later — this was fixed in that release |
 | "Windows protected your PC" | The executable isn't code-signed. Click **More info**, then **Run anyway** |
 | Antivirus flags the `.exe` | Unsigned executables are sometimes flagged by mistake. Download only from the official Releases page |
 
@@ -109,6 +117,30 @@ Your data stays in your own JSON files. Garage Desktop doesn't collect or send a
 |---|---|
 | [Garage](https://github.com/fouadsgarage/garage) | The web version this app is built around |
 | [Live demo](https://fouadsgarage.github.io/garage/) | Try Garage in your browser |
+| [Garage README](https://github.com/fouadsgarage/garage#readme) | Full feature documentation, terminal reference, and JSON format |
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Shell | pywebview (WebView2 on Windows) |
+| App | Hosted Garage (HTML/CSS/JS) |
+| Packaging | PyInstaller for the `.exe` |
+| Build Tools | PyInstaller |
+
+---
+
+## Project Structure
+
+```
+garage-desktop/
+├── main.py
+├── requirements.txt
+├── GarageDesktop.spec
+└── README.md
+```
 
 ---
 
@@ -127,6 +159,8 @@ Contributions, suggestions, and improvements are welcome.
 ## License
 
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+
+The app loads the hosted Garage version; third-party licenses (including the Ubuntu Font Licence) are covered by the [Garage repository](https://github.com/fouadsgarage/garage#license).
 
 ---
 
