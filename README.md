@@ -72,7 +72,7 @@ Your data stays in your own JSON files. Garage Desktop doesn't collect or send a
 ### Download the app
 
 1. Go to the [latest release](https://github.com/fouadsgarage/garage-desktop/releases/latest).
-2. Download `Garage Desktop.exe`.
+2. Download `GarageDesktop.exe`.
 3. Run it. No installation or Python required.
 
 ---
