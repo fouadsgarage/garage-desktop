@@ -1,4 +1,4 @@
-# Garage Desktop
+# garage-desktop
 
 **A lightweight Windows desktop app for the Garage task board.**
 
